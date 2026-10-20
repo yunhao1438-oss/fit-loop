@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@layer base {
+  html,
+  body {
+    @apply bg-paper text-ink antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  * {
+    -webkit-touch-callout: none;
+  }
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+  }
+  /* iOS Safari 在输入框字号 <16px 时会强制放大页面；允许用户缩放后必须保持 16px 起 */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+  /* 数字输入不显示 spinner，移动端更好用 */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl2 border border-paper-line bg-paper-card p-4 shadow-soft;
+  }
+  .card-tight {
+    @apply rounded-xl2 border border-paper-line bg-paper-card p-3 shadow-soft;
+  }
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-medium transition active:scale-[.98] disabled:pointer-events-none disabled:opacity-40;
+  }
+  .btn-primary {
+    @apply btn bg-moss-600 text-white shadow-soft;
+  }
+  .btn-secondary {
+    @apply btn border border-paper-line bg-paper-card text-ink;
+  }
+  .btn-ghost {
+    @apply btn text-ink-soft;
+  }
+  .btn-danger {
+    @apply btn border border-alert/30 bg-alert/5 text-alert;
+  }
+  .btn-lg {
+    @apply w-full rounded-xl2 py-4 text-base font-semibold;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full border border-paper-line bg-paper px-2.5 py-1 text-xs text-ink-soft;
+  }
+  .chip-active {
+    @apply border-moss-600 bg-moss-600 text-white;
+  }
+  .label {
+    @apply mb-1.5 block text-[13px] font-medium text-ink-soft;
+  }
+  .input {
+    /* ≥16px：允许页面缩放后，避免 iOS Safari 聚焦输入框时强制放大 */
+    @apply w-full rounded-xl border border-paper-line bg-paper-card px-3 py-2.5 text-[16px] text-ink outline-none transition placeholder:text-ink-faint focus:border-moss-500;
+  }
+  .section-title {
+    @apply mb-2 flex items-center justify-between px-0.5 text-[13px] font-semibold tracking-wide text-ink-faint;
+  }
+  .divide-dot {
+    @apply border-t border-dashed border-paper-line;
+  }
+}
+
+.sheet-enter {
+  animation: sheet-in 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.fade-in {
+  animation: fade-in 0.18s ease-out both;
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

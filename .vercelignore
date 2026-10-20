@@ -1,0 +1,9 @@
+# Vercel 上传时排除（构建在 Vercel 云端完成，这些都不需要上传）
+node_modules
+.next
+tests/.build
+.workbuddy
+tsconfig.tsbuildinfo
+AUDIT-2026-10-20.md
+.env.local
+*.log

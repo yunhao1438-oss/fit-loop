@@ -1,0 +1,31 @@
+{
+  "name": "fit-loop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FitLoop · 训练 / 饮食 / 复盘一体化的移动端优先健身管理应用（本地优先，无后端可用）",
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "node tests/build.mjs && node --test tests/plan.test.mjs tests/nutrition.test.mjs",
+    "test:build": "node tests/build.mjs"
+  },
+  "dependencies": {
+    "idb": "^8.0.0",
+    "next": "^15.5.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "autoprefixer": "^10.4.20",
+    "esbuild": "^0.24.0",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.6.0"
+  }
+}

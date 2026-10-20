@@ -1,0 +1,23 @@
+# dependencies / build
+node_modules/
+.next/
+out/
+tsconfig.tsbuildinfo
+tests/.build/
+
+# local env
+.env.local
+.env*.local
+
+# tooling
+.vercel/
+.workbuddy/
+
+# logs / os
+*.log
+.DS_Store
+Thumbs.db
+
+# static build temp
+.static-api-backup/
+
