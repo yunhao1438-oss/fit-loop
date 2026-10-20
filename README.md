@@ -198,3 +198,22 @@ NODE_OPTIONS="" npx next build      # 收尾清理不被拦截，构建正常退
 ```
 
 构建产物（`server/`、`static/`、`BUILD_ID` 等）在编译与静态生成阶段即已写入，构建本身已通过类型检查与 8 个页面生成。开发模式 `npm run dev` 不受此影响。
+
+---
+
+## 部署（GitHub Pages，静态版）
+
+线上地址：<https://yunhao1438-oss.github.io/fit-loop/>
+
+GitHub Pages 只能托管静态文件，因此有两个服务端代理（`/api/food/search`、`/api/vision/analyze`）不参与静态构建：
+构建时 `scripts/build-static.mjs` 会把 `src/app/api` 临时移出、导出 `out/`、再原样还原；前端在
+`NEXT_PUBLIC_STATIC_DEPLOY=1` 时直接走既有的「未接入」提示，不发起必然 404 的请求。其余功能（IndexedDB、
+计划、训练记录、营养计算、周报）全部在浏览器本地运行，不受影响。
+
+```bash
+npm run build:static        # 只构建，产物在 out/
+npm run deploy:pages        # 构建并发布到 gh-pages 分支（约 30-60 秒后线上生效）
+```
+
+源码在 `main` 分支，静态产物在 `gh-pages` 分支（Pages 从该分支发布）。若要换成 Vercel 等带 Node 运行时
+的平台，直接 `next build` 即可，两个 API 代理会照常工作（需配 `.env.local` 才会启用）。

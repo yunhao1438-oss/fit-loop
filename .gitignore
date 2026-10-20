@@ -21,3 +21,7 @@ Thumbs.db
 # static build temp
 .static-api-backup/
 
+
+# pages deploy staging
+.pages-deploy/
+
