@@ -1,0 +1,60 @@
+name: Release
+
+# 打 tag（v1.2.3）即自动：跑测试 → 静态构建 → 打包 zip → 创建 GitHub Release
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # 生成 release notes 需要完整历史
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit --incremental false
+
+      - name: Unit tests
+        run: node tests/build.mjs && node --test tests/plan.test.mjs tests/nutrition.test.mjs
+
+      - name: Static export
+        run: node scripts/build-static.mjs --base=/fit-loop
+
+      - name: Pack static site
+        run: |
+          set -euo pipefail
+          ASSET="fitloop-static-${GITHUB_REF_NAME}.zip"
+          cd out
+          zip -qr "../${ASSET}" .
+          cd ..
+          ls -lh "${ASSET}"
+          echo "ASSET=${ASSET}" >> "$GITHUB_ENV"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh release create "${GITHUB_REF_NAME}" "${ASSET}" \
+            --title "FitLoop ${GITHUB_REF_NAME}" \
+            --generate-notes \
+            --verify-tag
+          echo "已创建 release：https://github.com/${GITHUB_REPOSITORY}/releases/tag/${GITHUB_REF_NAME}"

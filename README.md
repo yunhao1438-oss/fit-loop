@@ -233,3 +233,20 @@ GitHub Pages 只能托管静态文件，因此两个服务端代理（`/api/food
 计划、训练记录、营养计算、周报）全部在浏览器本地运行，不受影响。
 
 若要换成带 Node 运行时的平台（Vercel 等），直接 `next build` 即可，两个 API 代理会照常工作（需配 `.env.local` 才启用）。
+
+---
+
+## 版本发布（Release）
+
+打一个 `v*` 形式的 tag 并推送，就会自动跑测试、静态构建、打包，并创建 GitHub Release：
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+流程见 `.github/workflows/release.yml`：`npm ci` → `tsc` → 单测 → 静态导出 →
+打包 `fitloop-static-<tag>.zip` → `gh release create`（Release notes 由 `--generate-notes`
+按提交历史自动生成，也可在页面上手改）。发布页：<https://github.com/yunhao1438-oss/fit-loop/releases>
+
+> 注意：tag 必须是 `v` 开头（如 `v0.2.0`），否则不会触发；发布不会影响已上线的 Pages 站点。
