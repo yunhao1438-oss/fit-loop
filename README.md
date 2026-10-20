@@ -205,15 +205,31 @@ NODE_OPTIONS="" npx next build      # 收尾清理不被拦截，构建正常退
 
 线上地址：<https://yunhao1438-oss.github.io/fit-loop/>
 
-GitHub Pages 只能托管静态文件，因此有两个服务端代理（`/api/food/search`、`/api/vision/analyze`）不参与静态构建：
-构建时 `scripts/build-static.mjs` 会把 `src/app/api` 临时移出、导出 `out/`、再原样还原；前端在
+### 自动发布（日常用这个）
+
+```bash
+git add -A && git commit -m "改动说明" && git push
+```
+
+push 到 `main` 会触发 `.github/workflows/deploy-pages.yml`：`npm ci` → `tsc` → 单测 47 条 →
+静态导出 → `actions/deploy-pages` 发布，约 **1.5 分钟**后线上生效。构建失败时线上仍是上一个成功版本。
+也可以在仓库 Actions 页面点 `Run workflow` 手动触发。
+
+### 本地构建 / 手动兜底
+
+```bash
+npm run build:static        # 只构建，产物在 out/（可用任意静态服务器预览）
+npm run deploy:pages        # 构建并把产物推到 gh-pages 分支
+```
+
+> 注意：当前 Pages 的发布源是 **GitHub Actions**，所以 `deploy:pages` 推的 `gh-pages` 分支不会自动上线；
+> 它是应急兜底 —— 在仓库 Settings → Pages 把 Source 改回 `gh-pages` 分支即可立即生效。
+
+### 静态化的取舍
+
+GitHub Pages 只能托管静态文件，因此两个服务端代理（`/api/food/search`、`/api/vision/analyze`）不参与静态构建：
+`scripts/build-static.mjs` 在构建期间把 `src/app/api` 临时移出、导出 `out/`、再原样还原；前端在
 `NEXT_PUBLIC_STATIC_DEPLOY=1` 时直接走既有的「未接入」提示，不发起必然 404 的请求。其余功能（IndexedDB、
 计划、训练记录、营养计算、周报）全部在浏览器本地运行，不受影响。
 
-```bash
-npm run build:static        # 只构建，产物在 out/
-npm run deploy:pages        # 构建并发布到 gh-pages 分支（约 30-60 秒后线上生效）
-```
-
-源码在 `main` 分支，静态产物在 `gh-pages` 分支（Pages 从该分支发布）。若要换成 Vercel 等带 Node 运行时
-的平台，直接 `next build` 即可，两个 API 代理会照常工作（需配 `.env.local` 才会启用）。
+若要换成带 Node 运行时的平台（Vercel 等），直接 `next build` 即可，两个 API 代理会照常工作（需配 `.env.local` 才启用）。
